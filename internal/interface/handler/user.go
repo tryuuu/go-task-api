@@ -13,6 +13,7 @@ type SignupRequest struct {
 	Password string `json:"password" binding:"required,min=6"`
 }
 
+// UserUsecaseはインターフェースを満たすためCreateUserメソッドを持つ
 type UserHandler struct {
 	UserUsecase *usecase.UserUsecase
 }
@@ -23,6 +24,7 @@ func NewUserHandler(uc *usecase.UserUsecase) *UserHandler {
 	}
 }
 
+// ポインタレシーバー使用
 func (h *UserHandler) SignupHandler(c *gin.Context) {
 	var req SignupRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

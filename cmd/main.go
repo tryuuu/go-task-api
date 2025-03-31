@@ -13,7 +13,7 @@ func main() {
 	// DB初期化
 	db := infrastructure.InitDB()
 
-	// DI: repository -> usecase -> handler
+	// 内側の層から順に構造体を生成
 	userRepo := infrastructure.NewUserRepository(db)
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	userHandler := handler.NewUserHandler(userUsecase)
@@ -28,7 +28,7 @@ func main() {
 		})
 	})
 
-	// Signupエンドポイント
+	// handler(プレゼンテーション層)がhttpリクエストを受け取り、内部でusecase(アプリケーション層)を呼び出す
 	r.POST("/signup", userHandler.SignupHandler)
 
 	// サーバー起動
