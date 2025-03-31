@@ -7,6 +7,12 @@ servers:
   - url: http://localhost:8080
 
 paths:
+  /:
+    get:
+      summary: ヘルスチェック
+      responses:
+        '200':
+          description: OK
   /signup:
     post:
       summary: ユーザー登録

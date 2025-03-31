@@ -1,11 +1,38 @@
-version: "3.9"
+version: '3.8'
 
 services:
   app:
-    build: .
-    container_name: go-task-api
-    volumes:
-      - .:/app
+    build:
+      context: .
+    container_name: go_app
+    env_file:
+      - .env
     ports:
       - "8080:8080"
-    command: ["./main"]
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    networks:
+      - backend
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
