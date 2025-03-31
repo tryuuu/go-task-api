@@ -12,7 +12,7 @@ import (
 
 var DB *gorm.DB
 
-func InitDB() {
+func InitDB() *gorm.DB {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DB_HOST"),
@@ -22,15 +22,16 @@ func InitDB() {
 		os.Getenv("DB_PORT"),
 	)
 
-	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("failed to connect database: ", err)
 	}
 
-	// 自動マイグレーション
-	err = DB.AutoMigrate(&model.User{})
+	// マイグレーション
+	err = db.AutoMigrate(&model.User{})
 	if err != nil {
 		log.Fatal("failed to migrate: ", err)
 	}
+
+	return db
 }

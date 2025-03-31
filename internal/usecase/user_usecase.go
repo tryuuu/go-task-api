@@ -5,13 +5,21 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tryuuu/go-task-api/internal/domain/model"
-	"github.com/tryuuu/go-task-api/internal/infrastructure"
+	"github.com/tryuuu/go-task-api/internal/interface/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 
 var jwtSecret = []byte("secret_key")
 
-func CreateUser(name, email, password string) (string, error) {
+type UserUsecase struct {
+	userRepo repository.UserRepository
+}
+
+func NewUserUsecase(repo repository.UserRepository) *UserUsecase {
+	return &UserUsecase{userRepo: repo}
+}
+
+func (u *UserUsecase) CreateUser(name, email, password string) (string, error) {
 	// パスワードをハッシュ化
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -24,16 +32,15 @@ func CreateUser(name, email, password string) (string, error) {
 		Password: string(hashed),
 	}
 
-	// DB保存
-	result := infrastructure.DB.Create(&user)
-	if result.Error != nil {
-		return "", result.Error
+	// ユーザー作成
+	if err := u.userRepo.Create(&user); err != nil {
+		return "", err
 	}
 
 	// JWT生成
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(),
+		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	})
 	signedToken, err := token.SignedString(jwtSecret)
 	if err != nil {

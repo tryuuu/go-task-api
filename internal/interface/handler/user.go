@@ -13,14 +13,24 @@ type SignupRequest struct {
 	Password string `json:"password" binding:"required,min=6"`
 }
 
-func SignupHandler(c *gin.Context) {
+type UserHandler struct {
+	UserUsecase *usecase.UserUsecase
+}
+
+func NewUserHandler(uc *usecase.UserUsecase) *UserHandler {
+	return &UserHandler{
+		UserUsecase: uc,
+	}
+}
+
+func (h *UserHandler) SignupHandler(c *gin.Context) {
 	var req SignupRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	token, err := usecase.CreateUser(req.Name, req.Email, req.Password)
+	token, err := h.UserUsecase.CreateUser(req.Name, req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
