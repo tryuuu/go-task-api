@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtSecret = []byte("your_secret_key") // 本番では環境変数に！
+var jwtSecret = []byte("secret_key")
 
 func CreateUser(name, email, password string) (string, error) {
 	// パスワードをハッシュ化
