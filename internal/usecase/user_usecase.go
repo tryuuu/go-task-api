@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -42,6 +43,29 @@ func (u *UserUsecase) CreateUser(name, email, password string) (string, error) {
 		"user_id": user.ID,
 		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	})
+	signedToken, err := token.SignedString(jwtSecret)
+	if err != nil {
+		return "", err
+	}
+
+	return signedToken, nil
+}
+
+func (u *UserUsecase) LoginUser(email, password string) (string, error) {
+	user, err := u.userRepo.FindByEmail(email)
+	if err != nil {
+		return "", fmt.Errorf("user not found")
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return "", fmt.Errorf("invalid password")
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id": user.ID,
+		"exp":     time.Now().Add(24 * time.Hour).Unix(),
+	})
+
 	signedToken, err := token.SignedString(jwtSecret)
 	if err != nil {
 		return "", err

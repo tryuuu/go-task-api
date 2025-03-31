@@ -30,6 +30,7 @@ func main() {
 
 	// handler(プレゼンテーション層)がhttpリクエストを受け取り、内部でusecase(アプリケーション層)を呼び出す
 	r.POST("/signup", userHandler.SignupHandler)
+	r.POST("/login", userHandler.LoginHandler)
 
 	// サーバー起動
 	r.Run(":8080")
