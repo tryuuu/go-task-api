@@ -1,18 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello World!")
-}
-
 func main() {
-	http.HandleFunc("/", handler)
-	fmt.Println("Starting server on :8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		panic(err)
-	}
+	r := gin.Default()
+
+	// CORS ミドルウェアを追加
+	r.Use(cors.Default())
+
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "ok",
+		})
+	})
+	r.Run(":8080")
 }

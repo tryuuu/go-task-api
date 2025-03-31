@@ -1,15 +1,12 @@
-FROM golang:1.21-alpine
+FROM golang:1.23-alpine
 
-RUN apk update && apk add --no-cache git
+RUN apk update && apk add --no-cache git curl
 
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
-
 COPY . .
 
-RUN go build -o main ./cmd/main.go
+RUN go mod download
+RUN go install github.com/air-verse/air@latest
 
-CMD ["./main"]
+CMD ["/go/bin/air"]
