@@ -13,7 +13,7 @@ func main() {
 	// DB初期化
 	db := infrastructure.InitDB()
 
-	// 内側の層から順に構造体を生成
+	// DI
 	userRepo := infrastructure.NewUserRepository(db)
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	userHandler := handler.NewUserHandler(userUsecase)
