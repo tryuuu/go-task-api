@@ -27,7 +27,7 @@ type UserHandler struct {
 	UserUsecase *usecase.UserUsecase
 }
 
-func NewUserHandler(uc *usecase.UserUsecase) *UserHandler {
+func NewUserHandler(uc *usecase.UserUsecase) *UserHandler { // DI
 	return &UserHandler{
 		UserUsecase: uc,
 	}

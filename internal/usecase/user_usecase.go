@@ -16,7 +16,7 @@ type UserUsecase struct {
 	userRepo repository.UserRepository
 }
 
-func NewUserUsecase(repo repository.UserRepository) *UserUsecase {
+func NewUserUsecase(repo repository.UserRepository) *UserUsecase { // DI
 	return &UserUsecase{userRepo: repo}
 }
 
