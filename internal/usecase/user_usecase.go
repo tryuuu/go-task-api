@@ -43,6 +43,7 @@ func (u *UserUsecase) CreateUser(name, email, password string) (string, error) {
 		"user_id": user.ID,
 		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	})
+	// 秘密鍵でトークンに署名
 	signedToken, err := token.SignedString(jwtSecret)
 	if err != nil {
 		return "", err
@@ -66,6 +67,7 @@ func (u *UserUsecase) LoginUser(email, password string) (string, error) {
 		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	})
 
+	// 秘密鍵でトークンに署名
 	signedToken, err := token.SignedString(jwtSecret)
 	if err != nil {
 		return "", err
